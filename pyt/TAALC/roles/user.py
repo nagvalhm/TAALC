@@ -29,9 +29,13 @@ class User(Member):
         return res
 
     @classmethod
-    def user_by_msg(cls, message: Message):
-        res = User.resource.read(telegram_id = message.from_user.id)
-        res = res[0]
+    def user_by_tg_user(cls, tg_user: TgUser) -> User:
+        res: User = None
+        if not cls.tg_user_is_saved(tg_user):
+            res = cls.save_user(tg_user)
+        else:            
+            res = cls.resource.read(telegram_id = tg_user.id)
+            res = res[0]
         return res
 
 
@@ -54,6 +58,7 @@ class User(Member):
     def save_user(cls, user: TgUser):
         res = cls(user).save()
         return res
+    
     
     def send_currency(self, to_user: User, currency: Currency, amount: float) -> Transaction:
         from ..token.transaction import Transaction

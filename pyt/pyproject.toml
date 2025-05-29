@@ -20,5 +20,5 @@ aiogram = "^3.20.0.post0"
 
 
 [tool.poetry.urls]
-Homepage = "https://github.com/Pavelpich/TAALC"
-Source = "https://github.com/Pavelpich/TAALC"
+Homepage = "https://github.com/nagvalhm/TAALC"
+Source = "https://github.com/nagvalhm/TAALC"

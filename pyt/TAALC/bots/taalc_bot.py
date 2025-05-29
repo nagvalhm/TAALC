@@ -1,11 +1,11 @@
 from .worker import Worker
-from aiogram import Bot, Dispatcher, types, Router
+from aiogram import Bot, Dispatcher, types, Router, filters, F
 # from asyncio import sleep, ensure_future, create_task
 # from .statistic_bot import StatisticBot
 # from .trading_bot import TradingBot
 # from epure.files import IniFile
 from aiogram.filters.command import Command, CommandStart
-from aiogram.filters import IS_MEMBER, IS_NOT_MEMBER, ChatMemberUpdatedFilter, JOIN_TRANSITION
+from aiogram.filters import ChatMemberUpdatedFilter, JOIN_TRANSITION, LEAVE_TRANSITION, PROMOTED_TRANSITION
 from argparse import ArgumentParser
 from aiogram.enums.chat_type import ChatType
 from aiogram.types import ChatMemberUpdated
@@ -15,30 +15,63 @@ from aiogram.types.user import User as TgUser
 from ..token.currency import Currency
 import traceback
 from ..token.wallet import Wallet
+from epure.dbs import GresDb
+from epure.resource.db.db import Db
+import asyncio
+from collections import OrderedDict
 
 
-class TelegramBot(Worker):
+class TaalcBot(Worker):
     bot_token:str
     bot:Bot
     dsp:Dispatcher
     config:object
 
+    msg_handlers = OrderedDict()
+    cmd_handlers = OrderedDict()
+
+    join_handlers = []
+    leave_handlers = []
+    promoted_handlers = []
+    reaction_handlers = []
+
+    db: Db = None
+
     
 
-    def __init__(self, config:object):        
+    def __init__(self, bot_token: str, db:Db=None, config:object=None):        
 
-        self.bot_token = config.bot_token
+        self.bot_token = bot_token
         self.config = config
+        self.db = db
+
+
         self.bot = Bot(self.bot_token)        
         self.dsp = Dispatcher()
-        # self.dsp.message(self.init_user_chat, commands=['start'])           
-        self.dsp.message()(self.message_handler)        
-        self.dsp.message(CommandStart())(self.init_user_chat)
+        # self.dsp.message(self.init_user_chat, commands=['start'])
+        for route, handler in self.msg_handlers.items():
+            self.dsp.message(F.text.regexp(route).as_("match"))(handler)
 
-        router = Router()
+        for route, handler in self.cmd_handlers.items():
+            self.dsp.message(Command(route))(handler)
+
+        for handler in self.join_handlers:
+            self.dsp.chat_member(ChatMemberUpdatedFilter(JOIN_TRANSITION))(handler)
+
+        for handler in self.leave_handlers:
+            self.dsp.chat_member(ChatMemberUpdatedFilter(LEAVE_TRANSITION))(handler)
+
+        for handler in self.promoted_handlers:
+            self.dsp.chat_member(ChatMemberUpdatedFilter(PROMOTED_TRANSITION))(handler)
+
+        for handler in self.reaction_handlers:
+            self.dsp.message_reaction()(handler)
+        # self.dsp.message()(self.message_handler)        
+        # self.dsp.message(CommandStart())(self.init_user_chat)
+
         
-        self.dsp.chat_member(ChatMemberUpdatedFilter(JOIN_TRANSITION))(self.new_member)
-        print('running')
+        # self.dsp.chat_member(ChatMemberUpdatedFilter(JOIN_TRANSITION))(self.new_member)
+        # print('running')
         # self.dsp.register_message_handler(self.trade, commands=['trade'])
         # self.dsp.register_message_handler(self.stats, commands=['stats'])
         # self.dsp.register_message_handler(self.stop, commands=['stop'])
@@ -62,6 +95,10 @@ class TelegramBot(Worker):
             currency = Currency.get_by_alias(cur_alias)
             amount = float(msg_split[-2])
             wallet_amount = user.wallet.amount(currency)
+            if amount <= 0 or wallet_amount <= 0:
+                await message.reply('А нахуй сходить не хочешь?')
+                return
+            
             if amount > wallet_amount:
                 res = f"У тебя нет столько {currency.aliases[1]}, кого ты пытаешься наебать? "+\
                     f"У тебя всего лишь {wallet_amount} грамм, иди поработай жопой, нищук."
@@ -123,50 +160,23 @@ class TelegramBot(Worker):
                 await message.reply(f"мамку ебал")               
         else:
             await message.answer("пососи потом проси")
-            # await message.answer(f'На колени, животное, <b>ты</b>!\n'+
-            #                'Прочитай наши правила, и потом не говори, что ты не знал, петух:\n'+
-            #                '<a href="https://t.me/polysap_rules/2">Правила полисап</a>', parse_mode="HTML")
-        # await dp.bot.send_message(dp.chat.id, 'собачка')
+
 
     async def new_member(self, event: ChatMemberUpdated):
         await event.answer(f'На колени, животное, <b>{event.new_chat_member.user.first_name}</b>!\n'+
                            'Прочитай наши правила, и потом не говори, что ты не знал, петух:\n'+
                            '<a href="https://t.me/polysap_rules/2">Правила полисап</a>', parse_mode="HTML")
-        # await event.answer(f"<b>Hi, {event.new_chat_member.user.first_name}!</b>",
-        #             parse_mode="HTML")
-    # async def handle_group_message(self, message: types.Message):
-    #     if "бот" in message.text.lower():
-    #         await message.reply("я здесь, не ори :)")
 
 
+    def start(self):
+        asyncio.run(self._start())
         
-    async def start(self):
+    async def _start(self):
         await self.dsp.start_polling(self.bot, skip_updates=True)
 
-    # async def init_user_chat(self, message):
-    #     await message.reply("Добро пожаловать на сервер шизофрения :)))000")
 
-    # async def trade(self, message):
-    #     # answer = await dp.bot.send_message(dp.chat.id, 'введите логины и пароли:')
-    #     bot = TradingBot(self.config)
-    #     bot.start()
 
-    # def start_stats(self, bot):
-    #     if not (hasattr(self,'statistic_bot') and self.statistic_bot):
-    #         self.statistic_bot = StatisticBot(self.config, bot)
-    #     self.statistic_bot.start()
 
-    # async def stats(self, message):
-    #     await message.reply("статистика запускается...")
-    #     self.start_stats(message.bot)
-    #     await message.reply("статистика запущена")
-
-    async def stop(self, message):
-        if hasattr(self, "statistic_bot") and not self.statistic_bot == None:
-            self.statistic_bot.stop()
-            await message.reply("статистика остановлена")
-        else:
-            await message.reply("ты пес обоссаный")
 
 
 
@@ -178,3 +188,15 @@ class TelegramBot(Worker):
         parser.add_argument("--message", "-m", help="Message text to sent", default="Hello, World!")
 
         return parser
+    
+def marat(handler):
+    
+    async def handler_wrapper(message: types.Message):
+        # Проверяем второе слово
+        words = message.text.split()
+        if len(words) > 1 and words[1].lower() == word.lower():
+            return await handler(message)
+    
+    # Регистрируем как обычный хендлер
+    Dispatcher.get_current().message.register(handler_wrapper)
+    return wrapped
