@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "TAALC"
-version = "0.1.8"
+version = "0.1.9"
 description = ""
-authors = ["Nikita Umerov <nagvalhm@yandex.ru>", "Pavel Pichugin"]
+authors = ["Nikita Umerov <nagvalhm@yandex.ru>"]
 readme = "README.md"
 # requires-python = "<=3.10.1"
 

@@ -7,7 +7,7 @@ from ..token.currency import Currency
 #     pass
 
 @msg_handler('марат')
-async def process_message(message: types.Message, user: User, match):        
+async def process_message(message: types.Message, user: User, match):
     msg_text = message.text.lower()
     if message.reply_to_message and \
         ('марат передай' in msg_text or 'марат, передай' in msg_text):

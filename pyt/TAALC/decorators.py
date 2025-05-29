@@ -18,7 +18,10 @@ def msg_handler(*args):
             except Exception as ex:
                 tb = traceback.format_tb(ex.__traceback__)
                 tb = "\n".join(tb)
-                await message.reply(f'{ex}\n {tb}')                    
+                err_msg = f'{ex}\n {tb}'
+                if TaalcBot.error_prefix:
+                    err_msg = f'{TaalcBot.error_prefix}: {err_msg}'
+                await message.reply(err_msg)                    
                 raise ex
         
         for route in args:
@@ -40,7 +43,10 @@ def cmd_handler(*args):
             except Exception as ex:
                 tb = traceback.format_tb(ex.__traceback__)
                 tb = "\n".join(tb)
-                await message.reply(f'{ex}\n {tb}')                    
+                err_msg = f'{ex}\n {tb}'
+                if TaalcBot.error_prefix:
+                    err_msg = f'{TaalcBot.error_prefix}: {err_msg}'
+                await message.reply(err_msg)                    
                 raise ex
         
         for route in args:
@@ -57,7 +63,10 @@ async def _on_member_updated(event: ChatMemberUpdated, handler):
     except Exception as ex:
         tb = traceback.format_tb(ex.__traceback__)
         tb = "\n".join(tb)
-        await event.answer(f'{ex}\n {tb}')                    
+        err_msg = f'{ex}\n {tb}'
+        if TaalcBot.error_prefix:
+            err_msg = f'{TaalcBot.error_prefix}: {err_msg}'
+        await event.answer(err_msg)                    
         raise ex
     
 
@@ -94,7 +103,11 @@ def reaction_handler(handler):
         except Exception as ex:
             tb = traceback.format_tb(ex.__traceback__)
             tb = "\n".join(tb)
-            await reaction.bot.send_message(reaction.chat.id, f'{ex}\n {tb}')                    
+            err_msg = f'{ex}\n {tb}'
+            if TaalcBot.error_prefix:
+                err_msg = f'{TaalcBot.error_prefix}: {err_msg}'
+             
+            await reaction.bot.send_message(reaction.chat.id, err_msg)                    
             raise ex
     TaalcBot.reaction_handlers.append(wrapper)
         

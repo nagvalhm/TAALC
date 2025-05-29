@@ -35,20 +35,23 @@ class TaalcBot(Worker):
     promoted_handlers = []
     reaction_handlers = []
 
+    error_prefix = ''
+
     db: Db = None
 
     
 
-    def __init__(self, bot_token: str, db:Db=None, config:object=None):        
+    def __init__(self, bot_token: str, db:Db=None, config:object=None, error_prefix = ''):        
 
         self.bot_token = bot_token
         self.config = config
         self.db = db
+        self.error_prefix = error_prefix
 
 
         self.bot = Bot(self.bot_token)        
         self.dsp = Dispatcher()
-        # self.dsp.message(self.init_user_chat, commands=['start'])
+        
         for route, handler in self.msg_handlers.items():
             self.dsp.message(F.text.regexp(route).as_("match"))(handler)
 
@@ -66,23 +69,9 @@ class TaalcBot(Worker):
 
         for handler in self.reaction_handlers:
             self.dsp.message_reaction()(handler)
-        # self.dsp.message()(self.message_handler)        
-        # self.dsp.message(CommandStart())(self.init_user_chat)
-
-        
-        # self.dsp.chat_member(ChatMemberUpdatedFilter(JOIN_TRANSITION))(self.new_member)
-        # print('running')
-        # self.dsp.register_message_handler(self.trade, commands=['trade'])
-        # self.dsp.register_message_handler(self.stats, commands=['stats'])
-        # self.dsp.register_message_handler(self.stop, commands=['stop'])
-        # self.dsp.register_message_handler(self.message_handler)        
+   
   
 
-    
-    # @dsp.message(Command("start"))
-    async def init_user_chat(self, message: types.Message):
-        # self.start_stats(self.bot)        
-        await message.reply("Добро пожаловать на сервер шизофрения :)))000")
 
 
     async def process_message(self, message: types.Message, user: User, msg_text: str):        
