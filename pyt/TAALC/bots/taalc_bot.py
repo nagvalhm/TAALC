@@ -52,7 +52,7 @@ class TaalcBot(Worker):
         self.bot = Bot(self.bot_token)        
         self.dsp = Dispatcher()
         
-        for route, handler in self.msg_handlers.items():
+        for route, handler in reversed(self.msg_handlers.items()):
             self.dsp.message(F.text.regexp(route).as_("match"))(handler)
 
         for route, handler in self.cmd_handlers.items():
