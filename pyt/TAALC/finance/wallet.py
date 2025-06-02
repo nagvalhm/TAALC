@@ -1,14 +1,14 @@
 from .tokens_bag import TokensBag
-from ..roles.user import User
+from ..tg_environment.t_user import TUser
 from .currency import Currency
 from .transaction import Transaction
 
 class Wallet(TokensBag):
 
-    user: User
+    user: TUser
     # currency: Currency
 
-    def __init__(self, user: User):
+    def __init__(self, user: TUser):
         self.user = user
         # self.currency = currency
 

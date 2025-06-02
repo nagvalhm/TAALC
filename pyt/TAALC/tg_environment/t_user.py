@@ -1,16 +1,16 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 from epure import epure, proto
-from .member import Member
-from aiogram.types.user import User as TgUser
-from ..token.currency import Currency
+from .t_member import TMember
+from aiogram.types.user import User
+from ..finance.currency import Currency
 if TYPE_CHECKING:
-    from ..token.transaction import Transaction
+    from ..finance.transaction import Transaction
 from aiogram.types import Message
 # from epure.generics import Check
 
 @epure()
-class User(Member):    
+class TUser(TMember):    
     first_name: str
     last_name: str
     username: str
@@ -19,18 +19,18 @@ class User(Member):
     @property
     def wallet(self):
         if not self._wallet:
-            from ..token.wallet import Wallet
+            from ..finance.wallet import Wallet
             self._wallet = Wallet(self)
         return self._wallet
 
     @classmethod
     def users(cls):
-        res = User.resource.read()
+        res = TUser.resource.read()
         return res
 
     @classmethod
-    def user_by_tg_user(cls, tg_user: TgUser) -> User:
-        res: User = None
+    def user_by_tg_user(cls, tg_user: User) -> TUser:
+        res: TUser = None
         if not cls.tg_user_is_saved(tg_user):
             res = cls.save_user(tg_user)
         else:            
@@ -39,7 +39,7 @@ class User(Member):
         return res
 
 
-    def __init__(self, user: TgUser=None):
+    def __init__(self, user: User=None):
         # super().__init__()
         if user:
             self.telegram_id = user.id
@@ -48,27 +48,27 @@ class User(Member):
             self.username = user.username
 
     @classmethod
-    def tg_user_is_saved(cls, user: TgUser) -> bool:
+    def tg_user_is_saved(cls, user: User) -> bool:
         users = cls.users()
         filtered = list(filter(lambda u: u.telegram_id == user.id, users))
         res = len(filtered) > 0
         return res
     
     @classmethod
-    def save_user(cls, user: TgUser):
+    def save_user(cls, user: User):
         res = cls(user).save()
         return res
     
     
-    def send_currency(self, to_user: User, currency: Currency, amount: float) -> Transaction:
-        from ..token.transaction import Transaction
+    def send_currency(self, to_user: TUser, currency: Currency, amount: float) -> Transaction:
+        from ..finance.transaction import Transaction
         res = Transaction(self, to_user, currency, amount)
         res = res.save()
 
         return res
     
     def __str__(self):
-        res = 'неуловимый джо'
+        res = 'noname user'
         first_name = self.first_name if self.first_name else ''
         last_name = self.last_name if self.last_name else ''
         if self.username:

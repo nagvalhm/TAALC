@@ -3,16 +3,16 @@
 from epure import epure
 from .transaction_batch import TransactionBatch
 from .currency import Currency
-from ..roles.member import Member
+from ..tg_environment.t_member import TMember
 # if TYPE_CHECKING:
-from ..roles.user import User
+from ..tg_environment.t_user import TUser
 from datetime import datetime
 
 @epure()
 class Transaction():
     transaction_batch: TransactionBatch
-    sent_from: User
-    sent_to: User
+    sent_from: TUser
+    sent_to: TUser
     currency: Currency
     amount: float
     transaction_time: datetime

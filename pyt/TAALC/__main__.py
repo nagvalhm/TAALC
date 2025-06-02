@@ -1,4 +1,4 @@
-from .bots.taalc_bot import TaalcBot
+from .taalc_bot import TaalcBot
 from epure.files import IniFile
 import asyncio
 import argparse
@@ -8,6 +8,15 @@ from .handlers.administration import *
 
 class Config:
     pass
+
+def get_bot(config):
+    db = GresDb(config.db_conn_str,
+        log_level=config.log_level, 
+        default_namespace=config.default_namespace)
+    db.connect()
+    
+    bot = TaalcBot(config.bot_token, db, config)    
+    return bot
 
 if __name__ == '__main__':
     # config = IniFile('./pyconfig.ini')    
@@ -23,11 +32,5 @@ if __name__ == '__main__':
     if hasattr(args, 'config') and args.config:
         config = IniFile(args.config)
 
-    db = GresDb(config.db_conn_str,
-        log_level=3, 
-        default_namespace='marat')
-    db.connect()
-    
-    bot = TaalcBot(config.bot_token, db, config)
+    bot = get_bot(config)
     bot.start()
-    # asyncio.run(bot.start())

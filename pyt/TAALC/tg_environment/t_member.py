@@ -2,5 +2,5 @@ from epure import epure
 from uuid import UUID
 
 # @epure()
-class Member:
+class TMember:
     telegram_id: int

@@ -2,7 +2,7 @@ from aiogram.types import ChatMemberUpdated
 from ..decorators import join_handler, leave_handler,\
       cmd_handler, promoted_handler, reaction_handler
 from aiogram import Bot, Dispatcher, types, Router
-from ..roles.user import User
+from ..tg_environment.t_user import TUser
 
 @join_handler
 async def new_member(event: ChatMemberUpdated, user):
@@ -19,7 +19,7 @@ async def promoted_member(event: ChatMemberUpdated, user):
     await event.answer(f'{user} получил новые звёздочки, респект')
 
 @cmd_handler('start', 'stop')
-async def process_cmd(message: types.Message, user: User): 
+async def process_cmd(message: types.Message, user: TUser): 
     await message.reply('Ты по русски говори')
 
 @reaction_handler

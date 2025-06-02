@@ -1,13 +1,13 @@
 from aiogram import Bot, Dispatcher, types, Router
-from ..roles.user import User
+from ..tg_environment.t_user import TUser
 from ..decorators import msg_handler
-from ..token.currency import Currency
+from ..finance.currency import Currency
 
 # def gift(message: types.Message, user: User, msg_text: str):
 #     pass
 
 @msg_handler('марат')
-async def process_message(message: types.Message, user: User, match):
+async def process_message(message: types.Message, user: TUser, match):
     msg_text = message.text.lower()
     if message.reply_to_message and \
         ('марат передай' in msg_text or 'марат, передай' in msg_text):
@@ -28,7 +28,7 @@ async def process_message(message: types.Message, user: User, match):
             return
 
         # to_user = User.resource.read(telegram_id = message.reply_to_message.from_user.id)[0]
-        to_user = User.user_by_msg(message.reply_to_message)
+        to_user = TUser.user_by_msg(message.reply_to_message)
         transaction = user.send_currency(to_user, currency, amount)
 
         await message.reply_to_message.reply(f"{to_user}, {user} передал тебе {currency.aliases[1]}, "+ \
@@ -38,7 +38,7 @@ async def process_message(message: types.Message, user: User, match):
         res = "А твоя мамка дешевая подзаборная шлюха, и что? " +\
             "Ну давай посмотрим сколько этот петушок заработал своим очком: \n"
         
-        checked_user = User.user_by_msg(message.reply_to_message)            
+        checked_user = TUser.user_by_msg(message.reply_to_message)            
         total = 0
         for cr in Currency.currencies():
             amt = checked_user.wallet.amount(cr)

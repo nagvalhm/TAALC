@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List
 
-class Token():
+class TaalcToken():
     name: str
     aliases: List[str]
 
@@ -11,5 +11,5 @@ class Token():
             self.aliases = aliases
 
     @classmethod
-    def get_by_alias(cls, alias: str) -> Token:
+    def get_by_alias(cls, alias: str) -> TaalcToken:
         pass

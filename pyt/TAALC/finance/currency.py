@@ -1,10 +1,10 @@
 from __future__ import annotations
-from .token import Token
+from .taalc_token import TaalcToken
 from epure import epure
 from typing import List
 
 @epure()
-class Currency(Token):
+class Currency(TaalcToken):
     _currencies = None
     aliases: List[str]
 
@@ -16,7 +16,7 @@ class Currency(Token):
    
 
     @classmethod
-    def get_by_alias(cls, alias: str) -> Token:
+    def get_by_alias(cls, alias: str) -> TaalcToken:
         res = None
 
         for cr in cls.currencies():

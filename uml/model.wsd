@@ -6,10 +6,7 @@ class Worker{
 }
 
 
-class TelegramBot{
-    init_user_chat()
-    message_handler()
-}
+class TaalcBot{}
 
 class Transaction{
     transaction_batch
@@ -26,11 +23,11 @@ class TokensBag{
     List[Token]
 }
 
-class User{
+class TUser{
 
 }
 
-class Member{
+class TMember{
     telegram_id
 }
 
@@ -41,12 +38,51 @@ class Wallet{
 }
 
 
-class Token{
+class TaalcToken{
     name
 }
 
+class TMessage{    
+    owner
+    creator
+    taalc_offer
+    taalc_nft
+    taalc_chat
+    tg_id    
+}
+
+enum NftState{
+    is_published
+    on_bidding
+    publishing
+}
+
+class TOffer{
+    from_user
+    to_user
+    offer_type
+    subject
+    currency
+    price
+    state
+    time
+    duration
+    message
+    bidding_id
+}
+enum OfferState{
+
+}
+enum OfferType{
+
+}
+class TChat{}
+
+
 class Currency{}
-class NFT{}
+class TaalcNft{
+    NftState
+}
 
 class SystemService{
     install()
@@ -57,13 +93,20 @@ class LinuxService{}
 SystemService <|-- WinService
 SystemService <|-- LinuxService
 
-Member <|-- User
-Token <|-- Currency
-Token <|-- NFT
+TMember <|-- TUser
+TaalcToken <|-- Currency
+TaalcToken <|-- TaalcNft
+TMessage --> TChat
+TMessage --> TaalcNft
+TaalcNft --> NftState
 
 Wallet -up-> Currency
-Wallet -left-> Member
+Wallet -left-> TMember
 Transaction --> TransactionBatch
 Transaction --> Currency
+
+TOffer --> OfferType
+TOffer --> OfferState
+TOffer --> TaalcNft
 
 Wallet --|> TokensBag

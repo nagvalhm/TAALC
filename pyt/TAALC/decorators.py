@@ -1,6 +1,6 @@
 from aiogram import Bot, Dispatcher, types, Router
-from .roles.user import User
-from .bots.taalc_bot import TaalcBot
+from .tg_environment.t_user import TUser
+from .taalc_bot import TaalcBot
 from re import Match
 import traceback
 from aiogram.types import ChatMemberUpdated
@@ -11,7 +11,7 @@ def msg_handler(*args):
         async def wrapper(message: types.Message, match: Match):
             # if message.chat.type in (ChatType.GROUP, ChatType.SUPERGROUP):
             try:
-                user = User.user_by_tg_user(message.from_user)                
+                user = TUser.user_by_tg_user(message.from_user)                
                 result =  await handler(message, user, match)
                 
                 return result
@@ -36,7 +36,7 @@ def cmd_handler(*args):
         async def wrapper(message: types.Message):
             
             try:
-                user = User.user_by_tg_user(message.from_user)
+                user = TUser.user_by_tg_user(message.from_user)
                 result =  await handler(message, user)
                 
                 return result
@@ -56,7 +56,7 @@ def cmd_handler(*args):
 
 async def _on_member_updated(event: ChatMemberUpdated, handler):
     try:
-        user = User.user_by_tg_user(event.new_chat_member.user)                
+        user = TUser.user_by_tg_user(event.new_chat_member.user)                
         result =  await handler(event, user)
         
         return result
@@ -96,7 +96,7 @@ def promoted_handler(handler):
 def reaction_handler(handler):
     async def wrapper(reaction: types.MessageReactionUpdated):
         try:
-            user = User.user_by_tg_user(reaction.user)
+            user = TUser.user_by_tg_user(reaction.user)
             result =  await handler(reaction, user)
             
             return result
