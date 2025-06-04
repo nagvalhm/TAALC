@@ -14,7 +14,7 @@ class TaalcBot(Worker):
     bot:Bot
     dsp:Dispatcher
     config:object
-    testers: list
+    testers: list = []
 
     msg_handlers = OrderedDict()
     cmd_handlers = OrderedDict()

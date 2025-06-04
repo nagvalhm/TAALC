@@ -15,7 +15,10 @@ def msg_handler(*args):
                 user = TUser.user_by_tg_user(message.from_user)                
                 result =  await handler(message, user, match)
 
-                if TaalcBot.testers:
+                if TaalcBot.testers and not result:
+                    print(f"{handler.__name__} doesn't return any result")
+
+                if TaalcBot.testers and result:
                     upd = Update(update_id=1, message=result)
                     for tester in TaalcBot.testers:
                         await tester.dsp.feed_update(tester.bot, upd)
