@@ -4,6 +4,7 @@ from .taalc_bot import TaalcBot
 from re import Match
 import traceback
 from aiogram.types import ChatMemberUpdated
+from aiogram.types import Message, Update
 
 def msg_handler(*args):
     def handler_wrapper(handler):
@@ -13,7 +14,12 @@ def msg_handler(*args):
             try:
                 user = TUser.user_by_tg_user(message.from_user)                
                 result =  await handler(message, user, match)
-                
+
+                if TaalcBot.testers:
+                    upd = Update(update_id=1, message=result)
+                    for tester in TaalcBot.testers:
+                        await tester.dsp.feed_update(tester.bot, upd)
+
                 return result
             except Exception as ex:
                 tb = traceback.format_tb(ex.__traceback__)

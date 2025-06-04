@@ -5,6 +5,8 @@ from aiogram.filters import ChatMemberUpdatedFilter, JOIN_TRANSITION, LEAVE_TRAN
 from epure.resource.db.db import Db
 import asyncio
 from collections import OrderedDict
+from typing import List
+# from .teest.tester import Tester
 
 
 class TaalcBot(Worker):
@@ -12,6 +14,7 @@ class TaalcBot(Worker):
     bot:Bot
     dsp:Dispatcher
     config:object
+    testers: list
 
     msg_handlers = OrderedDict()
     cmd_handlers = OrderedDict()
@@ -32,7 +35,7 @@ class TaalcBot(Worker):
         self.bot_token = bot_token
         self.config = config
         self.db = db
-        self.error_prefix = error_prefix
+        self.__class__.error_prefix = error_prefix
 
 
         self.bot = Bot(self.bot_token)        

@@ -6,7 +6,7 @@ from ..finance.currency import Currency
 # def gift(message: types.Message, user: User, msg_text: str):
 #     pass
 
-@msg_handler('марат')
+@msg_handler(r'(?i).*марат.*')
 async def process_message(message: types.Message, user: TUser, match):
     msg_text = message.text.lower()
     if message.reply_to_message and \
@@ -18,20 +18,20 @@ async def process_message(message: types.Message, user: TUser, match):
         amount = float(msg_split[-2])
         wallet_amount = user.wallet.amount(currency)
         if amount <= 0 or wallet_amount <= 0:
-            await message.reply('А нахуй сходить не хочешь?')
-            return
+            return await message.reply('А нахуй сходить не хочешь?')
+            
         
         if amount > wallet_amount:
             res = f"У тебя нет столько {currency.aliases[1]}, кого ты пытаешься наебать? "+\
                 f"У тебя всего лишь {wallet_amount} грамм, иди поработай жопой, нищук."
-            await message.reply(res)
-            return
+            return await message.reply(res)
+            
 
         # to_user = User.resource.read(telegram_id = message.reply_to_message.from_user.id)[0]
         to_user = TUser.user_by_msg(message.reply_to_message)
         transaction = user.send_currency(to_user, currency, amount)
 
-        await message.reply_to_message.reply(f"{to_user}, {user} передал тебе {currency.aliases[1]}, "+ \
+        return await message.reply_to_message.reply(f"{to_user}, {user} передал тебе {currency.aliases[1]}, "+ \
                             f"{amount} грамм, запрвляй баян")
     elif message.reply_to_message and \
         ('марат, петух' in msg_text or 'марат петух' in msg_text):
@@ -49,11 +49,11 @@ async def process_message(message: types.Message, user: TUser, match):
         else:
             res += f'Похоже петушок {checked_user} неплохо работает жопой!'
 
-        await message.reply(res)
+        return await message.reply(res)
 
     elif msg_text in ('марат, я петух', 'марат я петух'): 
         pass
     elif 'пиво' in message.text.lower():
-        await message.reply(f"где сходка?")
+        return await message.reply(f"где сходка?")
     else:
-        await message.reply(f"{message.from_user.first_name} - шлюха")
+        return await message.reply(f"{message.from_user.first_name} - шлюха")
