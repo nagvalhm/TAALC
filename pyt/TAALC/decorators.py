@@ -16,7 +16,8 @@ async def handle_with_tests(handler, message, user, match=None):
             chat = message.chat,
             message_thread_id = message.message_thread_id,
             from_user = message.from_user,
-            via_bot = message.via_bot,                        
+            via_bot = message.via_bot,
+            reply_to_message=message.reply_to_message
         ).as_(message.bot)
     
     if match:

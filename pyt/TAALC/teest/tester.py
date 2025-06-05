@@ -25,7 +25,8 @@ class Tester:
             self.msg_event.set()
 
     async def reply(self, replied_msg: Message, msg_text: str, parse_mode: str=None) -> BotResponse:
-        sent_msg = await self.bot.send_message(self.test_chat_id, msg_text, parse_mode=parse_mode)
+        msg_text = f'<blockquote>replied from {replied_msg.from_user.full_name}:\n{replied_msg.text}</blockquote>\n{msg_text}'
+        sent_msg = await self.bot.send_message(self.test_chat_id, msg_text, parse_mode='html')
         sent_msg = TestingMessage(
             text = sent_msg.text,
             message_id = sent_msg.message_id,
