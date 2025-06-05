@@ -16,7 +16,7 @@ async def user1():
 @mark.asyncio
 async def test_process_message(user1):
     user1 = await user1
-    TaalcBot.testers = [user1]
+    
     res = await user1.msg('hellow world')
     assert res.is_responded == False
 

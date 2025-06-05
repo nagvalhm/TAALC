@@ -5,6 +5,34 @@ from re import Match
 import traceback
 from aiogram.types import ChatMemberUpdated
 from aiogram.types import Message, Update
+from .teest.testing_message import TestingMessage
+
+async def handle_with_tests(handler, message, user, match=None):
+    if TaalcBot.testers:
+        message = TestingMessage(
+            text = message.text,
+            message_id = message.message_id,
+            date = message.date,
+            chat = message.chat,
+            message_thread_id = message.message_thread_id,
+            from_user = message.from_user,
+            via_bot = message.via_bot,                        
+        ).as_(message.bot)
+    
+    if match:
+        result =  await handler(message, user, match)
+    else:
+        result =  await handler(message, user)
+
+    if TaalcBot.testers and not result:
+        print(f"{handler.__name__} doesn't return any result")
+
+    if TaalcBot.testers and result:
+        upd = Update(update_id=1, message=result)
+        for tester in TaalcBot.testers:
+            await tester.dsp.feed_update(tester.bot, upd)
+
+
 
 def msg_handler(*args):
     def handler_wrapper(handler):
@@ -12,16 +40,8 @@ def msg_handler(*args):
         async def wrapper(message: types.Message, match: Match):
             # if message.chat.type in (ChatType.GROUP, ChatType.SUPERGROUP):
             try:
-                user = TUser.user_by_tg_user(message.from_user)                
-                result =  await handler(message, user, match)
-
-                if TaalcBot.testers and not result:
-                    print(f"{handler.__name__} doesn't return any result")
-
-                if TaalcBot.testers and result:
-                    upd = Update(update_id=1, message=result)
-                    for tester in TaalcBot.testers:
-                        await tester.dsp.feed_update(tester.bot, upd)
+                user = TUser.user_by_tg_user(message.from_user)
+                result = await handle_with_tests(handler, message, user, match)
 
                 return result
             except Exception as ex:
@@ -46,7 +66,7 @@ def cmd_handler(*args):
             
             try:
                 user = TUser.user_by_tg_user(message.from_user)
-                result =  await handler(message, user)
+                result =  await handle_with_tests(handler, message, user)
                 
                 return result
             except Exception as ex:

@@ -3,6 +3,7 @@ from aiogram.types import Message, Update
 from ..taalc_bot import TaalcBot
 import asyncio
 from .bot_response import BotResponse
+from .testing_message import TestingMessage
 
 class Tester:
     bot: Bot
@@ -23,8 +24,38 @@ class Tester:
             self.response.is_responded = True
             self.msg_event.set()
 
+    async def reply(self, replied_msg: Message, msg_text: str, parse_mode: str=None) -> BotResponse:
+        sent_msg = await self.bot.send_message(self.test_chat_id, msg_text, parse_mode=parse_mode)
+        sent_msg = TestingMessage(
+            text = sent_msg.text,
+            message_id = sent_msg.message_id,
+            date = sent_msg.date,
+            chat = sent_msg.chat,
+            message_thread_id = sent_msg.message_thread_id,
+            from_user = sent_msg.from_user,
+            via_bot = sent_msg.via_bot,
+            reply_to_message = replied_msg
+        )
+        
+        res = await self._msg(sent_msg, parse_mode)
+        return res
+
     async def msg(self, msg_text: str, parse_mode: str=None) -> BotResponse:
         sent_msg = await self.bot.send_message(self.test_chat_id, msg_text, parse_mode=parse_mode)
+        sent_msg = TestingMessage(
+            text = sent_msg.text,
+            message_id = sent_msg.message_id,
+            date = sent_msg.date,
+            chat = sent_msg.chat,
+            message_thread_id = sent_msg.message_thread_id,
+            from_user = sent_msg.from_user,
+            via_bot = sent_msg.via_bot
+        )
+        
+        return await self._msg(sent_msg, parse_mode)
+
+    async def _msg(self, sent_msg: Message, parse_mode: str=None) -> BotResponse:
+        
 
         self.response = BotResponse(sent_msg)
         self.msg_event = asyncio.Event()        
