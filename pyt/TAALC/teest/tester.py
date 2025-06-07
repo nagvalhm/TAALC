@@ -26,7 +26,17 @@ class Tester:
         msg_user = message.from_user
         if msg_user.is_bot and message.chat.id == self.test_chat_id and \
               msg_user.id == self.tested_bot.bot.id and not self.msg_event.is_set():
-                
+            
+            message = TestingMessage(
+                text = message.text,
+                message_id = message.message_id,
+                date = message.date,
+                chat = message.chat,
+                message_thread_id = message.message_thread_id,
+                from_user = message.from_user,
+                via_bot = message.via_bot,
+                reply_to_message = message.reply_to_message
+            )
             self.response.response = message
             self.response.is_responded = True
             self.msg_event.set()
