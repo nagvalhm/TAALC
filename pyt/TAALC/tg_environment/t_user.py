@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
-from epure import epure, proto
+from epure import epure
 from .t_member import TMember
 from aiogram.types.user import User
 from ..finance.currency import Currency

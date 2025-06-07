@@ -11,6 +11,18 @@ async def handle_with_tests(handler, message, match=None):
     try:
         user = TUser.user_by_tg_user(message.from_user)
         if TaalcBot.testers:
+            if message.reply_to_message:
+                reply = message.reply_to_message
+                message.reply_to_message = TestingMessage(
+                    text = reply.text,
+                    message_id = reply.message_id,
+                    date = reply.date,
+                    chat = reply.chat,
+                    message_thread_id = reply.message_thread_id,
+                    from_user = reply.from_user,
+                    via_bot = reply.via_bot,
+                    reply_to_message=reply.reply_to_message
+                ).as_(reply.bot)
             message = TestingMessage(
                 text = message.text,
                 message_id = message.message_id,
