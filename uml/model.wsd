@@ -8,13 +8,19 @@ class Worker{
 
 class TaalcBot{}
 
-class Transaction{
+class TaalcTransaction{
     transaction_batch
     from
-    to
-    token
+    to    
     transaction_time
 }
+
+class CurrencyTransaction{
+    currency
+    amount
+}
+
+class NftTransaction{}
 
 class TransactionBatch{}
 
@@ -102,8 +108,10 @@ TaalcNft --> NftState
 
 Wallet -up-> Currency
 Wallet -left-> TMember
-Transaction --> TransactionBatch
-Transaction --> Currency
+CurrencyTransaction -up-|> TaalcTransaction
+NftTransaction -up-|> TaalcTransaction
+CurrencyTransaction --> TransactionBatch
+CurrencyTransaction --> Currency
 
 TOffer --> OfferType
 TOffer --> OfferState

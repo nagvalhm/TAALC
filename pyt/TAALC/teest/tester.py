@@ -4,6 +4,7 @@ from ..taalc_bot import TaalcBot
 import asyncio
 from .bot_response import BotResponse
 from .testing_message import TestingMessage
+from ..tg_environment.t_user import TUser
 
 class Tester:
     bot: Bot
@@ -13,7 +14,13 @@ class Tester:
     response: BotResponse
     msg_event: asyncio.Event
     waiting_delay: int
+    _t_user: TUser = None
 
+    @property
+    def t_user(self):
+        if not self._t_user:
+            self._t_user = TUser.user_by_tg_user(self.bot)
+        return self._t_user
     
     async def handler(self, message: Message):
         msg_user = message.from_user

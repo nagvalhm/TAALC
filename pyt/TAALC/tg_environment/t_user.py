@@ -5,7 +5,7 @@ from .t_member import TMember
 from aiogram.types.user import User
 from ..finance.currency import Currency
 if TYPE_CHECKING:
-    from ..finance.transaction import Transaction
+    from ..finance.currency_transaction import CurrencyTransaction
 from aiogram.types import Message
 # from epure.generics import Check
 
@@ -60,9 +60,9 @@ class TUser(TMember):
         return res
     
     
-    def send_currency(self, to_user: TUser, currency: Currency, amount: float) -> Transaction:
-        from ..finance.transaction import Transaction
-        res = Transaction(self, to_user, currency, amount)
+    def send_currency(self, to_user: TUser, currency: Currency, amount: float) -> CurrencyTransaction:
+        from ..finance.currency_transaction import CurrencyTransaction
+        res = CurrencyTransaction(self, to_user, currency, amount)
         res = res.save()
 
         return res
