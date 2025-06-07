@@ -246,14 +246,14 @@ files = [
 
 [[package]]
 name = "epure"
-version = "0.3.12"
+version = "0.3.13"
 description = "purest architecture"
 optional = false
 python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "epure-0.3.12-py3-none-any.whl", hash = "sha256:9e4e8ef0fae53cc8b11aad25277c2d398f60a391217694f8765733fdcd0490ce"},
-    {file = "epure-0.3.12.tar.gz", hash = "sha256:1b9ac1e5cd0b4af998ab30c88b75f3658f30e9b63e530150e25eb0c1a595a4c4"},
+    {file = "epure-0.3.13-py3-none-any.whl", hash = "sha256:45692c3512751f65fbf9ffed6a0ec7e52dd09005505acae0a8f24c846378152d"},
+    {file = "epure-0.3.13.tar.gz", hash = "sha256:f8d55a42604cdbf7735eb5d54744ea98460b53e04c4d6435b5a944dec0d4cb89"},
 ]
 
 [package.dependencies]
