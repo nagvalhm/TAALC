@@ -10,10 +10,11 @@ from .teest.testing_message import TestingMessage
 async def handle_with_tests(handler, message, match=None):
     try:
         user = TUser.user_by_tg_user(message.from_user)
+        test_reply = message.reply_to_message
         if TaalcBot.testers:
             if message.reply_to_message:
                 reply = message.reply_to_message
-                message.reply_to_message = TestingMessage(
+                test_reply = TestingMessage(
                     text = reply.text,
                     message_id = reply.message_id,
                     date = reply.date,
@@ -31,7 +32,7 @@ async def handle_with_tests(handler, message, match=None):
                 message_thread_id = message.message_thread_id,
                 from_user = message.from_user,
                 via_bot = message.via_bot,
-                reply_to_message=message.reply_to_message
+                reply_to_message=test_reply
             ).as_(message.bot)
         
         if match:
