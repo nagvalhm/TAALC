@@ -11,12 +11,39 @@ from datetime import datetime
 class TOffer:
     from_user: TUser
     to_user: TUser
-    offer_type: OfferType
-    state: OfferState
+    offer_type: str
+    offer_state: str
     subject: TMessage
     currency: Currency
     price: float
-    time: datetime
+    datetime: datetime
     duration: int
-    message: TMessage
+    offer_message: TMessage
     bidding_id: UUID
+
+    def __init__(self,    
+            from_user: TUser,
+            to_user: TUser,
+            offer_type: str,
+            offer_state: str,
+            subject: TMessage,
+            currency: Currency,
+            price: float,            
+            offer_message: TMessage,
+            duration: int=None,
+            bidding_id: UUID=None
+            ):
+        self.from_user = from_user
+        self.to_user = to_user
+        self.offer_type = offer_type
+        self.offer_state = offer_state
+        self.subject = subject
+        self.currency = currency
+        self.price = price
+        self.offer_message = offer_message
+        self.duration = duration
+        self.bidding_id = bidding_id
+        self.datetime = datetime.now()
+
+        if not self.bidding_id:
+            self.bidding_id = UUID()
