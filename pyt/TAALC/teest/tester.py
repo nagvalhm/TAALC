@@ -99,7 +99,7 @@ class Tester:
         
 
     def __init__(self, tester_bot_token: str, tested_bot: TaalcBot, test_chat_id: int,\
-                 waiting_delay=3):
+                 waiting_delay=5):
         
         self.bot = Bot(tester_bot_token)
         self.test_chat_id = test_chat_id

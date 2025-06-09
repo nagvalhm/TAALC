@@ -3,6 +3,7 @@
 from epure import epure
 from .currency import Currency
 from ..tg_environment.t_member import TMember
+from ..tg_environment.t_user import TUser
 # if TYPE_CHECKING:
 from .taalc_transaction import TaalcTransaction
 from datetime import datetime
@@ -14,7 +15,7 @@ class CurrencyTransaction(TaalcTransaction):
     amount: float
 
 
-    def __init__(self, sent_from, sent_to, currency, amount):
+    def __init__(self, sent_from: TUser, sent_to: TUser, currency: Currency, amount: float):
 
         self.sent_from = sent_from
         self.sent_to = sent_to

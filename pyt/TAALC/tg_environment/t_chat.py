@@ -1,5 +1,6 @@
 from epure import epure
+from .telegram_entity import TelegramEntity
 
 @epure()
-class TChat:
-    pass
+class TChat(TelegramEntity):    
+    shifted_id: int

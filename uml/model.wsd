@@ -21,6 +21,7 @@ class CurrencyTransaction{
 }
 
 class NftTransaction{}
+class MessageTransaction{}
 
 class TransactionBatch{}
 
@@ -77,6 +78,10 @@ class TOffer{
     message
     bidding_id
 }
+
+class MessageOffer{
+
+}
 enum OfferState{
 
 }
@@ -95,6 +100,9 @@ class TaalcNftToken{
     taalc_nft
 }
 
+class MessageNftToken{
+
+}
 
 class SystemService{
     install()
@@ -116,13 +124,17 @@ Wallet -up-> Currency
 Wallet -left-> TMember
 CurrencyTransaction -up-|> TaalcTransaction
 NftTransaction -up-|> TaalcTransaction
+MessageTransaction --|> NftTransaction
 CurrencyTransaction --> TransactionBatch
 CurrencyTransaction --> Currency
+
 
 TOffer --> OfferType
 TOffer --> OfferState
 TOffer --> TaalcNft
+MessageOffer --|> TOffer
 
 Wallet --|> TokensBag
 TaalcNftToken --> TaalcNft
 TaalcNftToken --> NftState
+MessageNftToken --|> TaalcNftToken

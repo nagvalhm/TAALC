@@ -4,16 +4,17 @@ from ..finance.currency import Currency
 from ..tg_environment.t_message import TMessage
 from .offer_state import OfferState
 from .offer_type import OfferType
-from uuid import UUID
+from uuid import UUID, uuid4
 from datetime import datetime
+from ..tg_environment.telegram_entity import TelegramEntity
 
-@epure()
+# @epure()
 class TOffer:
     from_user: TUser
     to_user: TUser
     offer_type: str
     offer_state: str
-    subject: TMessage
+    subject: TelegramEntity
     currency: Currency
     price: float
     datetime: datetime
@@ -46,4 +47,4 @@ class TOffer:
         self.datetime = datetime.now()
 
         if not self.bidding_id:
-            self.bidding_id = UUID()
+            self.bidding_id = uuid4()
