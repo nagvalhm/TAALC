@@ -1,12 +1,15 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from ..finance.taalc_nft import TaalcNft
-from ..finance.taalc_nft_token import TaalcNftToken
+# from ..finance.taalc_nft import TaalcNft
+# from ..finance.taalc_nft_token import TaalcNftToken
+
 from .t_user import TUser
 from .t_chat import TChat
 from .. import bidding
+from .. import finance
 if TYPE_CHECKING:
     from ..bidding.t_offer import TOffer
+    from ..finance.message_nft_token import MessageNftToken
 from epure import epure
 from aiogram import types
 from .telegram_entity import TelegramEntity
@@ -17,7 +20,7 @@ class TMessage(TelegramEntity):
     creator: TUser
     # if TYPE_CHECKING:
     taalc_offer: 'bidding.t_offer.TOffer' = None
-    taalc_nft_token: TaalcNftToken = None
+    taalc_nft_token: 'finance.message_nft_token.MessageNftToken' = None
     taalc_chat: TChat
     tg_chat_id: int
 
