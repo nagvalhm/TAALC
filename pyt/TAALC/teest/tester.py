@@ -82,15 +82,17 @@ class Tester:
             await asyncio.sleep(self.waiting_delay)
             self.msg_event.set()
 
-        self.dsp.message()(self.handler)
+        wait_task = asyncio.create_task(waiter())
+        self.dsp.message()(self.handler)        
         asyncio.create_task(self.dsp.start_polling(self.bot, skip_updates=True))
-        asyncio.create_task(waiter())
+        
         upd = Update(update_id=1, message=sent_msg)
         await self.tested_bot.dsp.feed_update(self.tested_bot.bot, upd)
         # asyncio.gather(self.dsp.start_polling(self.bot, skip_updates=True), self.tested_bot._start())
 
         
         await self.msg_event.wait()
+        wait_task.cancel()
         # await asyncio.sleep(3)
         await self.dsp.stop_polling()
         self.dsp.message.handlers.clear()
@@ -99,7 +101,7 @@ class Tester:
         
 
     def __init__(self, tester_bot_token: str, tested_bot: TaalcBot, test_chat_id: int,\
-                 waiting_delay=5):
+                 waiting_delay=10):
         
         self.bot = Bot(tester_bot_token)
         self.test_chat_id = test_chat_id

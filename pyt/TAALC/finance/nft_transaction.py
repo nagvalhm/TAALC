@@ -10,5 +10,11 @@ class NftTransaction(TaalcTransaction):
     taalc_nft_token: TaalcNftToken
     amount: int    
 
-    def __init__(self, sent_from, sent_to, transaction_batch=None):
+    def __init__(self, sent_from, sent_to, taalc_nft_token, transaction_batch=None, amount=1):
         super().__init__()
+
+        self.sent_from = sent_from
+        self.sent_to = sent_to
+        self.taalc_nft_token = taalc_nft_token
+        self.transaction_batch = transaction_batch
+        self.amount = amount

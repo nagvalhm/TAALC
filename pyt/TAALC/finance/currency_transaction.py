@@ -7,6 +7,7 @@ from ..tg_environment.t_user import TUser
 # if TYPE_CHECKING:
 from .taalc_transaction import TaalcTransaction
 from datetime import datetime
+from .transaction_batch import TransactionBatch
 
 @epure()
 class CurrencyTransaction(TaalcTransaction):
@@ -15,10 +16,14 @@ class CurrencyTransaction(TaalcTransaction):
     amount: float
 
 
-    def __init__(self, sent_from: TUser, sent_to: TUser, currency: Currency, amount: float):
+    def __init__(self, sent_from: TUser, sent_to: TUser,\
+                  currency: Currency, amount: float, batch: TransactionBatch=None):
 
         self.sent_from = sent_from
         self.sent_to = sent_to
         self.currency = currency
         self.amount = amount
         self.transaction_time = datetime.now()
+
+        if batch:
+            self.transaction_batch = batch

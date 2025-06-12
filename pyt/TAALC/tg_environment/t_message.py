@@ -8,32 +8,48 @@ from .t_chat import TChat
 from .. import bidding
 from .. import finance
 if TYPE_CHECKING:
-    from ..bidding.t_offer import TOffer
+    from ..bidding.message_offer import MessageOffer
     from ..finance.message_nft_token import MessageNftToken
 from epure import epure
 from aiogram import types
 from .telegram_entity import TelegramEntity
+
 
 @epure()
 class TMessage(TelegramEntity):
     # owner: TUser
     creator: TUser
     # if TYPE_CHECKING:
-    taalc_offer: 'bidding.t_offer.TOffer' = None
-    taalc_nft_token: 'finance.message_nft_token.MessageNftToken' = None
+    taalc_offer: 'bidding.message_offer.MessageOffer'
+    message_nft_token: 'finance.message_nft_token.MessageNftToken'
     taalc_chat: TChat
     tg_chat_id: int
+    text: str
 
     @property
     def owner(self):
-        pass
-
-    def __init__(self, message: types.Message):
+        if not self.message_nft_token:
+           return self.creator
+        from ..finance.message_transaction import MessageTransaction
+        transactions = MessageTransaction.resource.read(taalc_nft_token = self.message_nft_token)
+        if not transactions:
+            return self.creator
+        transactions = sorted(transactions, key=lambda tr: tr.transaction_time)
+        last_tr = transactions[-1]
+        return last_tr.sent_to
         
+
+    def __init__(self, message: types.Message=None):
+        
+        if not message:
+            return
+        self.taalc_offer = None
+        self.message_nft_token = None
         self.creator = TUser.user_by_tg_user(message.from_user)
-        self.owner = TUser.user_by_tg_user(message.from_user)
+        # self.owner = TUser.user_by_tg_user(message.from_user)
         self.tg_chat_id=message.chat.id
         self.telegram_id=message.message_id
+        self.text = message.text
 
         taalc_chat = TChat.resource.read(telegram_id=self.tg_chat_id)
         if taalc_chat:
