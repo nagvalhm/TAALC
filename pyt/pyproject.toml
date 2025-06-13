@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "TAALC"
-version = "0.1.31"
+version = "0.1.32"
 description = ""
 authors = ["Nikita Umerov <nagvalhm@yandex.ru>"]
 readme = "README.md"

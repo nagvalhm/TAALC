@@ -28,10 +28,11 @@ class TMessage(TelegramEntity):
 
     @property
     def owner(self):
-        if not self.message_nft_token:
+        if not (self.message_nft_token and  hasattr(self.message_nft_token, 'data_id')):
            return self.creator
         from ..finance.message_transaction import MessageTransaction
-        transactions = MessageTransaction.resource.read(taalc_nft_token = self.message_nft_token)
+        nft_token_id = self.message_nft_token.data_id
+        transactions = MessageTransaction.resource.read(taalc_nft_token = nft_token_id)
         if not transactions:
             return self.creator
         transactions = sorted(transactions, key=lambda tr: tr.transaction_time)
